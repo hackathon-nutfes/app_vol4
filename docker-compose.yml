@@ -7,14 +7,17 @@ services:
       MYSQL_DATABASE: root
     ports:
       - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql-data:/var/lib/mysql
 
   api:
     build: ./api
-    command: rails s -p 3000 -b '0.0.0.0'
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - ./api:/app_name
     ports:
-      - "80:3000"
+      - "3000:3000"
     links:
       - db
 
@@ -22,8 +25,12 @@ services:
     build: ./view
     command: npm run serve
     ports:
-      - 8080:8080
+      - "8080:8080"
     volumes:
       - ./view:/app
     stdin_open: true
     tty: true
+
+volumes:
+  mysql-data:
+    driver: local
