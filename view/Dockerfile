@@ -1,9 +1,12 @@
-FROM node:8.15.0-alpine
+FROM node:12.14.1-alpine
 
 WORKDIR /app/vue-project
 
-RUN apk update && \
-    npm install -g npm && \
-    npm install -g @vue/cli
+RUN npm install -g @vue/cli
 
 CMD ["/bin/ash"]
+
+COPY ./vue-project/package*.json/app/
+RUN npm install
+RUN npm install --save axios
+RUN npm install --save vuex-persistedstate
